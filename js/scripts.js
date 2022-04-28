@@ -5,6 +5,7 @@
     let timerGame;
     let player;
     let enemy;
+    let enemyRandom;
     let jumpTimer;
     let checkJumper = false;
 
@@ -31,11 +32,33 @@
 
         CreatePlayer();
         CreateEnemy();
+        GenerateRandomEnemy();
         LoopGame();
     }
 
     // Game Over
     function GameOver(){
+        clearInterval(timerGame);
+        clearInterval(jumpTimer);
+        clearInterval(enemyRandom);
+
+        setTimeout(() => {
+            player.remove();
+        
+            if(enemy){
+                enemy.forEach(element => {
+                    element.remove();
+                });    
+            }
+
+            mainGame.style.backgroundImage = "none";
+
+            btnPlayGame.textContent = "Voce Perdeu! Jogue novamente"
+            btnPlayGame.style.display = "block";
+
+        }, 2500)
+
+        
 
     }
 
@@ -43,6 +66,8 @@
     function LoopGame(){
         timerGame = setInterval(() => {
             MoveBackground();
+            MoveEnemy();
+            CheckColision();
         }, 30)
     }
 
@@ -70,17 +95,17 @@
             if(checkJumper == false){
                 checkJumper = true;
                 jumpTimer = setInterval(() => {
-                    let posicaoY = parseInt(getComputedStyle(player).top);
-                    player.style.top = posicaoY - 10 + "px";
+                    let posicaoY = parseInt(getComputedStyle(player).marginTop);
+                    player.style.marginTop = posicaoY - 10 + "px";
     
                     if(posicaoY  <= 0){
                         clearInterval(jumpTimer)
                         
                         jumpTimer = setInterval(() => {
-                            let posicaoY = parseInt(getComputedStyle(player).top);
-                            player.style.top = posicaoY + 14 + "px";
+                            let posicaoY = parseInt(getComputedStyle(player).marginTop);
+                            player.style.marginTop = posicaoY + 14 + "px";
     
-                            if(posicaoY  >= 140){
+                            if(posicaoY  >= 130){
                                 clearInterval(jumpTimer)
                                 checkJumper = false;
                             }
@@ -98,27 +123,64 @@
         enemy.classList.add("enemy")
 
         mainGame.appendChild(enemy)
-        
+
+        enemy = document.querySelectorAll(".enemy")
+
     }
 
     // Generate Random Enemy
     function GenerateRandomEnemy(){
 
+        let value;
+            enemyRandom = setInterval(() => {
+                value = Math.floor(Math.random() * 10)
+
+                if(value > 3){
+                    CreateEnemy();
+                }
+            }, 1000)
+    }
+
+    // Move Enemy
+    function MoveEnemy(){
+        if(enemy){
+            enemy.forEach(element => {
+                let posicaoX = parseInt(getComputedStyle(element).left)
+                element.style.left = posicaoX - 18 + "px" 
+            });    
+        }
+        
     }
 
     // Checa Colisao
     function CheckColision(){
-
+        ColisionEnemyFinalMap()
+        ColisionPlayerEnemy()
     }
 
     // Colisao Player -> Enemy
     function ColisionPlayerEnemy(){
+        enemy.forEach(element => {
+            let enemyPosicaoX = parseInt(getComputedStyle(element).left)
+            let playerPosicaoY = parseInt(getComputedStyle(player).marginTop)
 
+            if(enemyPosicaoX <= 141 && enemyPosicaoX >= 20 && playerPosicaoY >= 150){
+                GameOver();
+            }
+        });   
     }
 
     // Colisao Enemy -> Final Map
     function ColisionEnemyFinalMap(){
-        
+        if(enemy){
+            enemy.forEach(element => {
+                let posicaoX = parseInt(getComputedStyle(element).left)
+
+                if(posicaoX <= 0){
+                    element.remove();
+                }
+            });   
+        }
     }
 
 })(window, document);
