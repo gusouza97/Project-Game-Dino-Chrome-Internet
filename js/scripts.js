@@ -28,7 +28,7 @@
     function Start(){
 
         btnPlayGame.style.display = "none"
-        mainGame.style.backgroundImage = "url('img/background.png')"
+        mainGame.style.backgroundImage = "url('../img/background.png')"
 
         CreatePlayer();
         CreateEnemy();
