@@ -164,7 +164,9 @@
             let enemyPosicaoX = parseInt(getComputedStyle(element).left)
             let playerPosicaoY = parseInt(getComputedStyle(player).marginTop)
 
-            if(enemyPosicaoX <= 141 && enemyPosicaoX >= 20 && playerPosicaoY >= 150){
+            console.log(playerPosicaoY)
+
+            if(enemyPosicaoX <= 141 && enemyPosicaoX >= 20 && playerPosicaoY >= 140){
                 GameOver();
             }
         });   
